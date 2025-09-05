@@ -25,7 +25,7 @@
 
 ## 2. 后端API开发
 
-- [ ] 2.1 创建Fastify服务器基础结构
+- [x] 2.1 创建Fastify服务器基础结构
   - File: apps/api/src/server.ts
   - 配置Fastify服务器和基础中间件
   - 设置JSON Schema验证
