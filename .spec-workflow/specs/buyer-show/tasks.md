@@ -99,7 +99,7 @@
   - _Leverage: React Hook Form + shadcn/ui_
   - _Requirements: 3.1_
 
-- [ ] 3.4 创建商品选择组件
+- [x] 3.4 创建商品选择组件
   - File: apps/web/src/components/ProductSelector.tsx
   - 展示商品网格和选择交互
   - 添加商品预览和分类功能

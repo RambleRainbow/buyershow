@@ -1,6 +1,7 @@
 'use client';
 
 import { PhotoUpload } from '@/components/PhotoUpload';
+import { ProductSelector } from '@/components/ProductSelector';
 import { useGenerationFlow } from '@/hooks/useGenerationFlow';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -94,16 +95,29 @@ export default function GeneratePage() {
         )}
 
         {generationFlow.currentStep === 2 && (
-          <div className="text-center py-16">
-            <h2 className="text-2xl font-semibold mb-4">选择商品</h2>
-            <p className="text-muted-foreground mb-8">
-              商品选择功能正在开发中...
-            </p>
-            <div className="flex justify-center space-x-4">
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold mb-2">选择商品</h2>
+              <p className="text-muted-foreground">
+                选择你想要融入场景照片中的商品
+              </p>
+            </div>
+            
+            <ProductSelector
+              onProductSelect={(product) => {
+                console.log('Product selected:', product.name);
+              }}
+              className="max-w-4xl mx-auto"
+            />
+
+            <div className="flex justify-center space-x-4 pt-8">
               <Button variant="outline" onClick={previousStep}>
                 上一步
               </Button>
-              <Button onClick={nextStep} disabled={!canProceedToStep(3)}>
+              <Button 
+                onClick={nextStep} 
+                disabled={!generationFlow.selectedProduct}
+              >
                 下一步
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
