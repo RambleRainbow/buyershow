@@ -49,7 +49,7 @@
   - _Leverage: ofetch HTTP客户端_
   - _Requirements: 2.4, 2.5_
 
-- [ ] 2.4 实现提示文本生成服务
+- [x] 2.4 实现提示文本生成服务
   - File: apps/api/src/services/promptGenerationService.ts
   - 将用户描述转换为优化的API提示
   - 添加摄影术语和风格转换逻辑
