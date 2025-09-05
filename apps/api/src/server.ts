@@ -16,6 +16,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { authPlugin } from './middleware/auth.js';
 import { loggingPlugin } from './middleware/logging.js';
 import { uploadRoutes } from './routes/upload.js';
+import { nanoBananaRoutes } from './routes/nanoBanana.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -144,6 +145,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   // 注册路由
   await app.register(uploadRoutes, { prefix: '/api/v1' });
+  await app.register(nanoBananaRoutes, { prefix: '/api/v1' });
 
   // 健康检查端点
   app.get('/health', {

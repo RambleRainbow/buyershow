@@ -41,7 +41,7 @@
   - _Leverage: Fastify multipart插件_
   - _Requirements: 2.1_
 
-- [ ] 2.3 创建Google Nano Banana API客户端
+- [x] 2.3 创建Google Nano Banana API客户端
   - File: apps/api/src/services/nanoBananaAPIService.ts
   - 封装Google Gemini API调用逻辑
   - 实现错误重试和响应处理机制
