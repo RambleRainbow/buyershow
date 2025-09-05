@@ -91,7 +91,7 @@
   - _Leverage: tRPC client + Zustand_
   - _Requirements: 3.1_
 
-- [ ] 3.3 创建照片上传组件
+- [x] 3.3 创建照片上传组件
   - File: apps/web/src/components/PhotoUpload.tsx
   - 实现拖拽上传和文件预览功能
   - 添加类型验证和进度显示
