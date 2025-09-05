@@ -1,47 +1,34 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    
-    // Next.js 特定配置
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "es6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "jsxImportSource": "react",
-    "incremental": true,
-    
-    // 路径映射
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/components/*"],
-      "@/hooks/*": ["./src/hooks/*"],
+      "@/lib/*": ["./src/lib/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/store/*": ["./src/store/*"],
-      "@/styles/*": ["./src/styles/*"],
-      "@buyershow/shared-types": ["../../packages/shared-types/src"],
-      "@buyershow/shared-types/*": ["../../packages/shared-types/src/*"],
-      "@buyershow/config": ["../../packages/config/src"],
-      "@buyershow/config/*": ["../../packages/config/src/*"]
+      "@/types/*": ["./src/types/*"],
+      "@buyershow/shared-types": ["../../packages/shared-types/src"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "out",
-    "dist"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

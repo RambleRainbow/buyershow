@@ -75,7 +75,7 @@
 
 ## 3. 前端应用开发
 
-- [ ] 3.1 创建Next.js项目结构
+- [x] 3.1 创建Next.js项目结构
   - File: apps/web/src/app/layout.tsx, page.tsx
   - 设置App Router和基础页面结构
   - 配置Tailwind CSS和shadcn/ui

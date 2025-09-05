@@ -1,0 +1,29 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Buyer Show - AI 买家秀生成器',
+  description: 'AI-powered image generation service for creating buyer show photos',
+  keywords: ['AI', '买家秀', 'image generation', 'buyer show', 'social media'],
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="zh-CN">
+      <body className={inter.className}>
+        <div className="min-h-screen bg-background font-sans antialiased">
+          <main className="flex-1">
+            {children}
+          </main>
+        </div>
+      </body>
+    </html>
+  );
+}
