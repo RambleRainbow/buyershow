@@ -83,7 +83,7 @@
   - _Leverage: Next.js 14 + App Router_
   - _Requirements: 前端架构设计_
 
-- [ ] 3.2 设置tRPC客户端和状态管理
+- [x] 3.2 设置tRPC客户端和状态管理
   - File: apps/web/src/utils/trpc.ts, src/store/useStore.ts
   - 配置tRPC客户端连接到后端API
   - 设置Zustand状态管理
