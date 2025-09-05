@@ -33,7 +33,7 @@
   - _Leverage: Fastify TypeScript插件_
   - _Requirements: 后端架构设计_
 
-- [ ] 2.2 实现文件上传服务
+- [x] 2.2 实现文件上传服务
   - File: apps/api/src/services/fileUploadService.ts
   - 使用@fastify/multipart处理文件上传
   - 添加文件类型和大小验证
