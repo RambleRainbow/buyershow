@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../apps/api/node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String?  @unique
+  role        String   @default("user") // 'user' | 'admin'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  imageUploads       ImageUpload[]
+  products          Product[]
+  generationRequests GenerationRequest[]
+
+  @@map("users")
+}
+
+model ImageUpload {
+  id           String   @id @default(cuid())
+  filename     String   @unique
+  originalName String
+  size         Int
+  mimeType     String
+  path         String
+  url          String
+  uploadedAt   DateTime @default(now())
+  userId       String
+
+  // Relations
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generationRequests GenerationRequest[]
+
+  @@map("image_uploads")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String?
+  imageUrl    String?
+  price       Float?
+  currency    String   @default("CNY")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+
+  // Relations
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generationRequests GenerationRequest[]
+
+  @@map("products")
+}
+
+model GenerationRequest {
+  id                   String            @id @default(cuid())
+  userDescription      String
+  productDescription   String?
+  placementDescription String?
+  styleDescription     String?
+  enhancedPrompt       String
+  status               GenerationStatus  @default(PENDING)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  completedAt          DateTime?
+  userId               String
+  sceneImageId         String?
+  productId            String?
+
+  // AI Generation Details
+  aiModel              String?           // e.g., "gemini-2.5-flash-image-preview"
+  promptTokens         Int?
+  outputTokens         Int?
+  totalTokens          Int?
+  temperature          Float?
+  
+  // Error Handling
+  errorCode            String?
+  errorMessage         String?
+  retryCount           Int               @default(0)
+  maxRetries           Int               @default(3)
+
+  // Relations
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sceneImage          ImageUpload?       @relation(fields: [sceneImageId], references: [id], onDelete: SetNull)
+  product             Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
+  generatedImages     GeneratedImage[]
+
+  @@map("generation_requests")
+}
+
+model GeneratedImage {
+  id                String            @id @default(cuid())
+  filename          String            @unique
+  originalPrompt    String
+  enhancedPrompt    String
+  imageData         String            // Base64 encoded image data
+  mimeType          String
+  size              Int?
+  width             Int?
+  height            Int?
+  quality           String?           // 'draft' | 'standard' | 'hd'
+  style             String?           // 'natural' | 'artistic' | 'commercial' etc.
+  generatedAt       DateTime          @default(now())
+  isPublic          Boolean           @default(false)
+  generationRequestId String
+
+  // AI Metadata
+  aiModel           String?
+  seed              Int?
+  steps             Int?
+  guidance          Float?
+  
+  // Relations
+  generationRequest GenerationRequest @relation(fields: [generationRequestId], references: [id], onDelete: Cascade)
+
+  @@map("generated_images")
+}
+
+model SystemMetrics {
+  id                    String   @id @default(cuid())
+  date                  DateTime @default(now())
+  totalRequests         Int      @default(0)
+  successfulGenerations Int      @default(0)
+  failedGenerations     Int      @default(0)
+  totalTokensUsed       Int      @default(0)
+  averageProcessingTime Float?   // in seconds
+  apiCost               Float?   // in USD
+  
+  @@unique([date])
+  @@map("system_metrics")
+}
+
+enum GenerationStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+
+  @@map("generation_status")
+}

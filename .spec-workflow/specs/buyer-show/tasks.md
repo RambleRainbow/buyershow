@@ -57,7 +57,7 @@
   - _Leverage: 文本模板和NLP工具_
   - _Requirements: 2.3, 2.4_
 
-- [ ] 2.5 设置Prisma数据库和模型
+- [x] 2.5 设置Prisma数据库和模型
   - File: prisma/schema.prisma, apps/api/src/db/client.ts
   - 定义数据库模型（ImageUpload, Product, GenerationRequest等）
   - 配置SQLite数据库连接
