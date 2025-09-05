@@ -65,7 +65,7 @@
   - _Leverage: Prisma ORM_
   - _Requirements: 数据模型设计_
 
-- [ ] 2.6 创建tRPC路由和类型定义
+- [x] 2.6 创建tRPC路由和类型定义
   - File: apps/api/src/routers/appRouter.ts
   - 实现文件上传、商品获取、图像生成等API
   - 使用Zod进行输入验证

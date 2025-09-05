@@ -18,6 +18,7 @@ import { loggingPlugin } from './middleware/logging.js';
 import { uploadRoutes } from './routes/upload.js';
 import { nanoBananaRoutes } from './routes/nanoBanana.js';
 import { promptRoutes } from './routes/prompt.js';
+import { trpcRoutes } from './routes/trpc.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -148,6 +149,9 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(uploadRoutes, { prefix: '/api/v1' });
   await app.register(nanoBananaRoutes, { prefix: '/api/v1' });
   await app.register(promptRoutes, { prefix: '/api/v1' });
+  
+  // 注册tRPC路由
+  await app.register(trpcRoutes);
 
   // 健康检查端点
   app.get('/health', {
