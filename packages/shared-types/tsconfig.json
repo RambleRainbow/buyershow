@@ -6,7 +6,20 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    
+    // 包构建特定配置
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    
+    // 严格检查（继承自根配置，这里确保启用）
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true
   },
   "include": [
     "src/**/*"

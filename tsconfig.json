@@ -1,48 +1,80 @@
 {
   "compilerOptions": {
+    // 基础配置
     "target": "ES2022",
-    "lib": ["ES2022"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": false,
+    "skipLibCheck": false,
     "esModuleInterop": true,
-    "module": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": true,
+
+    // 严格模式配置
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    // 额外的严格检查
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+
+    // JSX配置（为Next.js准备）
     "jsx": "preserve",
+    "jsxImportSource": "react",
+
+    // 增量编译
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "composite": false,
+
+    // 路径映射
     "baseUrl": ".",
     "paths": {
       "@buyershow/shared-types": ["./packages/shared-types/src"],
-      "@buyershow/config": ["./packages/config/src"]
-    }
+      "@buyershow/shared-types/*": ["./packages/shared-types/src/*"],
+      "@buyershow/config": ["./packages/config/src"],
+      "@buyershow/config/*": ["./packages/config/src/*"],
+      "@/*": ["./src/*"]
+    },
+
+    // 类型定义
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    "**/*.js", 
+    "**/*.jsx",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
     ".next",
+    "out",
     "dist",
-    "build"
+    "build",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ],
   "references": [
-    {
-      "path": "./apps/web"
-    },
-    {
-      "path": "./apps/api"
-    },
     {
       "path": "./packages/shared-types"
     },
