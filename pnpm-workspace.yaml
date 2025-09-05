@@ -1,0 +1,8 @@
+packages:
+  # 应用程序
+  - "apps/*"
+  # 共享包
+  - "packages/*"
+  # 文档和工具
+  - "docs"
+  - "tools/*"
