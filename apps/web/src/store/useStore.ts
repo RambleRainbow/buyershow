@@ -52,6 +52,7 @@ interface GenerationFlow {
   currentStep: number;
   totalSteps: number;
   sceneImage?: SceneImage;
+  productImage?: SceneImage; // Reuse SceneImage interface for product image
   selectedProduct?: Product;
   generationRequest?: GenerationRequest;
   generationResult?: GenerationResult;
@@ -66,6 +67,7 @@ interface AppState {
   // Actions
   setCurrentStep: (step: number) => void;
   setSceneImage: (image: SceneImage | undefined) => void;
+  setProductImage: (image: SceneImage | undefined) => void;
   setSelectedProduct: (product: Product | undefined) => void;
   setGenerationRequest: (request: GenerationRequest) => void;
   setGenerationResult: (result: GenerationResult | undefined) => void;
@@ -130,6 +132,18 @@ export const useStore = create<AppState>()(
             }),
             false,
             'setSceneImage'
+          ),
+
+        setProductImage: (image) =>
+          set(
+            (state) => ({
+              generationFlow: {
+                ...state.generationFlow,
+                productImage: image,
+              },
+            }),
+            false,
+            'setProductImage'
           ),
 
         setSelectedProduct: (product) =>
@@ -263,6 +277,7 @@ export const useStore = create<AppState>()(
 export const useGenerationFlow = () => useStore((state) => state.generationFlow);
 export const useCurrentStep = () => useStore((state) => state.generationFlow.currentStep);
 export const useSceneImage = () => useStore((state) => state.generationFlow.sceneImage);
+export const useProductImage = () => useStore((state) => state.generationFlow.productImage);
 export const useSelectedProduct = () => useStore((state) => state.generationFlow.selectedProduct);
 export const useGenerationResult = () => useStore((state) => state.generationFlow.generationResult);
 export const useIsGenerating = () => useStore((state) => state.generationFlow.isGenerating);

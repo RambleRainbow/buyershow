@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { PhotoUpload } from '@/components/PhotoUpload';
+import { ProductImageUpload } from '@/components/ProductImageUpload';
 import { ProductSelector } from '@/components/ProductSelector';
 import { DescriptionForm } from '@/components/DescriptionForm';
 import { ResultDisplay } from '@/components/ResultDisplay';
@@ -27,6 +28,7 @@ export default function GeneratePage() {
     generateImage, 
     uploadSceneImage,
     setSelectedProduct,
+    setProductImage,
     isGenerating,
     hasUnsavedProgress
   } = useGenerationFlow();
@@ -192,22 +194,44 @@ export default function GeneratePage() {
                       <StatusIcon status={getSectionStatus('product')} />
                       <div className="flex items-center space-x-2">
                         <ShoppingBag className="w-5 h-5 text-green-500" />
-                        <span className="font-medium">2. 选择商品</span>
+                        <span className="font-medium">2. 上传商品图片</span>
                       </div>
                     </div>
                     <Badge variant={getSectionStatus('product') === 'completed' ? 'default' : 'outline'}>
-                      {generationFlow.selectedProduct ? generationFlow.selectedProduct.name : '未选择'}
+                      {generationFlow.productImage ? '已完成' : '未完成'}
                     </Badge>
                   </div>
                   
                   {isExpanded.product && (
                     <div className="ml-7 pl-4 border-l-2 border-gray-200">
                       {generationFlow.sceneImage ? (
-                        <ProductSelector
-                          onProductSelect={(product) => {
-                            console.log('Product selected:', product.name);
+                        <ProductImageUpload
+                          onImageSelect={(base64, file) => {
+                            console.log('Product image uploaded:', file.name);
+                            // Update the product image in the store
+                            setProductImage({
+                              id: Math.random().toString(),
+                              filename: file.name,
+                              originalName: file.name,
+                              url: base64,
+                              size: file.size,
+                              mimeType: file.type,
+                            });
+                            
+                            // Also set a selected product based on the uploaded image
+                            setSelectedProduct({
+                              id: Math.random().toString(),
+                              name: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension
+                              description: '用户上传的商品图片',
+                              imageUrl: base64,
+                              currency: 'CNY',
+                            });
+                            
                             // Auto expand next section
                             setIsExpanded(prev => ({ ...prev, description: true }));
+                          }}
+                          onUploadError={(error) => {
+                            console.error('Product image upload error:', error);
                           }}
                         />
                       ) : (
@@ -292,6 +316,7 @@ export default function GeneratePage() {
                   <pre className="text-xs text-muted-foreground">
                     {JSON.stringify({
                       hasSceneImage: !!generationFlow.sceneImage,
+                      hasProductImage: !!generationFlow.productImage,
                       hasProduct: !!generationFlow.selectedProduct,
                       hasRequest: !!generationFlow.generationRequest,
                       hasResult: !!generationFlow.generationResult,

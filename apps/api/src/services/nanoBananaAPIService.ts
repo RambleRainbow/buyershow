@@ -47,6 +47,8 @@ export interface ImageGenerationRequest {
   prompt: string;
   sceneImageBase64?: string;
   sceneImageMimeType?: string;
+  productImageBase64?: string;
+  productImageMimeType?: string;
   temperature?: number;
   maxOutputTokens?: number;
 }
@@ -162,30 +164,41 @@ export class NanoBananaAPIService {
   async generateImage(request: ImageGenerationRequest): Promise<ImageGenerationResponse> {
     try {
       const contents: any[] = [];
+      const parts: any[] = [];
 
+      // 构建基础文本提示
+      let basePrompt = request.prompt;
+      
+      // 如果有多张图片，生成专门的融合提示词
+      if (request.sceneImageBase64 && request.productImageBase64) {
+        basePrompt = `请将第二张图片中的商品自然地融合到第一张图片的场景中。商品应该看起来真实地放置在场景里，保持适当的比例、光照和阴影效果。生成一张专业的买家秀图片。用户描述：${request.prompt}`;
+      } else if (request.sceneImageBase64) {
+        basePrompt = `User uploaded scene image. Please integrate the described product into this scene naturally. ${request.prompt}`;
+      }
+
+      parts.push({ text: basePrompt });
+
+      // 添加场景图片
       if (request.sceneImageBase64 && request.sceneImageMimeType) {
-        contents.push({
-          parts: [
-            {
-              text: `User uploaded scene image. Please integrate the described product into this scene naturally. ${request.prompt}`,
-            },
-            {
-              inlineData: {
-                mimeType: request.sceneImageMimeType,
-                data: request.sceneImageBase64,
-              },
-            },
-          ],
-        });
-      } else {
-        contents.push({
-          parts: [
-            {
-              text: request.prompt,
-            },
-          ],
+        parts.push({
+          inlineData: {
+            mimeType: request.sceneImageMimeType,
+            data: request.sceneImageBase64,
+          },
         });
       }
+
+      // 添加商品图片
+      if (request.productImageBase64 && request.productImageMimeType) {
+        parts.push({
+          inlineData: {
+            mimeType: request.productImageMimeType,
+            data: request.productImageBase64,
+          },
+        });
+      }
+
+      contents.push({ parts });
 
       const payload = {
         contents,
@@ -199,7 +212,10 @@ export class NanoBananaAPIService {
       
       this.fastify.log.info({
         hasSceneImage: !!request.sceneImageBase64,
+        hasProductImage: !!request.productImageBase64,
+        isMultiImageFusion: !!(request.sceneImageBase64 && request.productImageBase64),
         promptLength: request.prompt.length,
+        totalParts: parts.length,
       }, 'Sending request to Nano Banana API');
 
       const response = await this.makeRequest(validatedPayload);
@@ -209,8 +225,8 @@ export class NanoBananaAPIService {
         throw new Error('No content generated from API');
       }
 
-      const parts = validatedResponse.candidates[0].content.parts;
-      const imagePart = parts.find(part => part.inlineData?.mimeType?.startsWith('image/'));
+      const responseParts = validatedResponse.candidates[0].content.parts;
+      const imagePart = responseParts.find(part => part.inlineData?.mimeType?.startsWith('image/'));
 
       if (!imagePart?.inlineData) {
         throw new Error('No image data found in response');

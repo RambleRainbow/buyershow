@@ -16,6 +16,8 @@ const generationRequestSchema = z.object({
   userDescription: z.string().min(5, 'Description must be at least 5 characters'),
   styleDescription: z.string().optional(),
   positionDescription: z.string().optional(),
+  productImageBase64: z.string().optional(),
+  sceneImageBase64: z.string().optional(),
   temperature: z.number().min(0).max(1).default(0.7),
 });
 
@@ -59,9 +61,30 @@ app.post('/trpc/generation.generateImage', async (request, reply) => {
 
     app.log.info({ promptLength: optimizedPrompt.length }, 'Calling Nano Banana API');
 
-    // Generate image using Nano Banana API
+    // Prepare multi-image generation request
+    let sceneImageData, productImageData;
+    
+    if (validatedInput.sceneImageBase64) {
+      // Extract base64 data (remove data URL prefix if present)
+      sceneImageData = validatedInput.sceneImageBase64.includes(',') 
+        ? validatedInput.sceneImageBase64.split(',')[1]
+        : validatedInput.sceneImageBase64;
+    }
+    
+    if (validatedInput.productImageBase64) {
+      // Extract base64 data (remove data URL prefix if present)
+      productImageData = validatedInput.productImageBase64.includes(',')
+        ? validatedInput.productImageBase64.split(',')[1] 
+        : validatedInput.productImageBase64;
+    }
+
+    // Generate image using Nano Banana API with multi-image support
     const generationResult = await nanoBananaService.generateImage({
       prompt: optimizedPrompt,
+      sceneImageBase64: sceneImageData,
+      sceneImageMimeType: sceneImageData ? 'image/jpeg' : undefined,
+      productImageBase64: productImageData,
+      productImageMimeType: productImageData ? 'image/jpeg' : undefined,
       temperature: validatedInput.temperature,
       maxOutputTokens: 2048,
     });

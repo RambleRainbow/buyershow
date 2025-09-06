@@ -8,6 +8,7 @@ export function useGenerationFlow() {
     generationFlow,
     setCurrentStep,
     setSceneImage,
+    setProductImage,
     setSelectedProduct,
     setGenerationRequest,
     setGenerationResult,
@@ -22,6 +23,7 @@ export function useGenerationFlow() {
       const stateToSave = {
         currentStep: generationFlow.currentStep,
         sceneImage: generationFlow.sceneImage,
+        productImage: generationFlow.productImage,
         selectedProduct: generationFlow.selectedProduct,
         generationRequest: generationFlow.generationRequest,
         generationResult: generationFlow.generationResult,
@@ -41,6 +43,7 @@ export function useGenerationFlow() {
           // Only restore if saved within last 24 hours
           if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
             if (parsed.sceneImage) setSceneImage(parsed.sceneImage);
+            if (parsed.productImage) setProductImage(parsed.productImage);
             if (parsed.selectedProduct) setSelectedProduct(parsed.selectedProduct);
             if (parsed.generationRequest) setGenerationRequest(parsed.generationRequest);
             if (parsed.generationResult) setGenerationResult(parsed.generationResult);
@@ -87,6 +90,8 @@ export function useGenerationFlow() {
               userDescription: data.userDescription || '生成专业的买家秀图片',
               styleDescription: data.styleDescription,
               positionDescription: data.positionDescription,
+              sceneImageBase64: generationFlow.sceneImage?.url,
+              productImageBase64: generationFlow.productImage?.url,
               temperature: data.temperature || 0.7,
             },
           }),
@@ -225,6 +230,43 @@ export function useGenerationFlow() {
       throw error;
     }
   }, [uploadSceneMutation, setSceneImage, setError]);
+
+  // Product image upload 
+  const uploadProductImage = useCallback(async (file: File) => {
+    try {
+      setError(undefined);
+      
+      // Convert file to base64
+      const reader = new FileReader();
+      const fileData = await new Promise<string>((resolve, reject) => {
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const result = await uploadSceneMutation.mutateAsync({
+        fileData,
+        fileName: file.name,
+        mimeType: file.type,
+        fileSize: file.size,
+      });
+
+      setProductImage({
+        id: Math.random().toString(), // This would come from the API response
+        filename: result.filename,
+        originalName: result.originalName,
+        url: result.url,
+        size: result.size,
+        mimeType: result.mimeType,
+      });
+
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed';
+      setError(errorMessage);
+      throw error;
+    }
+  }, [uploadSceneMutation, setProductImage, setError]);
 
   // Image generation
   const generateImage = useCallback(async (request: {
@@ -404,9 +446,11 @@ export function useGenerationFlow() {
     
     // Actions
     uploadSceneImage,
+    uploadProductImage,
     generateImage,
     regenerateImage,
     setSelectedProduct,
+    setProductImage,
     setGenerationRequest,
     resetGenerationFlow,
     clearStepData,

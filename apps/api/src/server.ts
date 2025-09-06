@@ -12,9 +12,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { config } from './config/index.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import { authPlugin } from './middleware/auth.js';
-import { loggingPlugin } from './middleware/logging.js';
+import errorHandler from './middleware/errorHandler.js';
+import authPlugin from './middleware/auth.js';
+import loggingPlugin from './middleware/logging.js';
 import { uploadRoutes } from './routes/upload.js';
 import { nanoBananaRoutes } from './routes/nanoBanana.js';
 import { promptRoutes } from './routes/prompt.js';
