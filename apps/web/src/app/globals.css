@@ -72,5 +72,71 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Mobile-first responsive utilities */
+  .container-mobile {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Mobile-optimized text sizes */
+  .text-mobile-h1 {
+    @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold;
+  }
+  
+  .text-mobile-h2 {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
+  }
+  
+  .text-mobile-h3 {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium;
+  }
+  
+  /* Mobile-friendly buttons */
+  .btn-mobile {
+    @apply px-4 py-3 sm:px-6 sm:py-4 text-sm sm:text-base touch-target;
+  }
+  
+  /* Mobile grid layouts */
+  .grid-mobile-cards {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+  
+  .grid-mobile-2col {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6;
+  }
+  
+  /* Mobile-optimized spacing */
+  .section-padding {
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+  
+  .content-padding {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  /* Mobile file upload area */
+  .upload-area-mobile {
+    @apply min-h-[200px] sm:min-h-[300px] lg:min-h-[400px];
+  }
+  
+  /* Mobile modal/dialog */
+  .modal-mobile {
+    @apply max-h-[90vh] overflow-y-auto m-2 sm:m-4 lg:m-8;
+  }
+  
+  /* Better mobile scrolling */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }

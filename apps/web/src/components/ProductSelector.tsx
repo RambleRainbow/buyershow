@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, ShoppingBag, Filter, Check, Plus } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search, ShoppingBag, Check, Plus } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { trpc } from '@/utils/trpc';
 import { useGenerationFlow } from '@/hooks/useGenerationFlow';
 
 interface Product {
@@ -34,7 +33,7 @@ const MOCK_PRODUCTS: Product[] = [
     name: 'iPhone 15 Pro',
     description: '6.1英寸超视网膜XDR显示屏，钛金属设计',
     category: '数码产品',
-    imageUrl: '/placeholder-phone.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 7999,
     currency: 'CNY',
     isActive: true,
@@ -44,7 +43,7 @@ const MOCK_PRODUCTS: Product[] = [
     name: 'Nike Air Max 270',
     description: '舒适透气运动鞋，适合日常穿着',
     category: '服装鞋帽',
-    imageUrl: '/placeholder-shoes.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 899,
     currency: 'CNY',
     isActive: true,
@@ -54,7 +53,7 @@ const MOCK_PRODUCTS: Product[] = [
     name: '星巴克保温杯',
     description: '304不锈钢材质，保温8小时',
     category: '家居用品',
-    imageUrl: '/placeholder-cup.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 199,
     currency: 'CNY',
     isActive: true,
@@ -64,7 +63,7 @@ const MOCK_PRODUCTS: Product[] = [
     name: 'MacBook Pro 14寸',
     description: 'M3芯片，专业级笔记本电脑',
     category: '数码产品',
-    imageUrl: '/placeholder-laptop.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 14999,
     currency: 'CNY',
     isActive: true,
@@ -74,7 +73,7 @@ const MOCK_PRODUCTS: Product[] = [
     name: 'Adidas运动T恤',
     description: '透气速干面料，运动休闲两相宜',
     category: '服装鞋帽',
-    imageUrl: '/placeholder-tshirt.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 299,
     currency: 'CNY',
     isActive: true,
@@ -84,8 +83,18 @@ const MOCK_PRODUCTS: Product[] = [
     name: '无印良品香氛蜡烛',
     description: '天然大豆蜡，温和香氛',
     category: '家居用品',
-    imageUrl: '/placeholder-candle.jpg',
+    imageUrl: '/static/images/水瓶.jpeg',
     price: 89,
+    currency: 'CNY',
+    isActive: true,
+  },
+  {
+    id: '7',
+    name: '时尚运动水瓶',
+    description: '双层真空保温，24小时保温保冷，BPA-free安全材质',
+    category: '家居用品',
+    imageUrl: '/static/images/水瓶.jpeg',
+    price: 128,
     currency: 'CNY',
     isActive: true,
   },
@@ -348,7 +357,7 @@ export function ProductSelector({ onProductSelect, className }: ProductSelectorP
       {productsQuery.error && (
         <div className="text-center py-8 text-red-500">
           <p className="text-sm">加载商品失败</p>
-          <p className="text-xs mt-1">{productsQuery.error.message}</p>
+          <p className="text-xs mt-1">{String(productsQuery.error)}</p>
         </div>
       )}
 

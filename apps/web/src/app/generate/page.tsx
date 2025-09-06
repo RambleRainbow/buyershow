@@ -2,13 +2,15 @@
 
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { ProductSelector } from '@/components/ProductSelector';
+import { DescriptionForm } from '@/components/DescriptionForm';
+import { ResultDisplay } from '@/components/ResultDisplay';
 import { useGenerationFlow } from '@/hooks/useGenerationFlow';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export default function GeneratePage() {
-  const { generationFlow, nextStep, previousStep, canProceedToStep } = useGenerationFlow();
+  const { generationFlow, nextStep, previousStep, canProceedToStep, generateImage } = useGenerationFlow();
 
   const handleUploadComplete = (file: File) => {
     console.log('Upload completed:', file.name);
@@ -91,6 +93,29 @@ export default function GeneratePage() {
               onUploadError={handleUploadError}
               className="max-w-2xl mx-auto"
             />
+
+            {/* Next Step Button - Show after successful upload */}
+            {generationFlow.sceneImage && (
+              <div className="text-center pt-8">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center space-x-2 text-green-600">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span className="font-medium">场景照片上传成功！</span>
+                  </div>
+                  <p className="text-muted-foreground text-sm">
+                    接下来选择你想要融入场景中的商品
+                  </p>
+                  <Button 
+                    onClick={nextStep}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg"
+                    disabled={!canProceedToStep(2)}
+                  >
+                    开始选择商品
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -126,16 +151,57 @@ export default function GeneratePage() {
         )}
 
         {generationFlow.currentStep === 3 && (
-          <div className="text-center py-16">
-            <h2 className="text-2xl font-semibold mb-4">描述风格</h2>
-            <p className="text-muted-foreground mb-8">
-              风格描述功能正在开发中...
-            </p>
-            <div className="flex justify-center space-x-4">
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-semibold mb-2">描述风格</h2>
+              <p className="text-muted-foreground">
+                详细描述您希望的风格和商品位置，这将帮助AI更好地生成买家秀
+              </p>
+            </div>
+            
+            <DescriptionForm
+              onSubmit={async (data) => {
+                console.log('Description submitted:', data);
+                try {
+                  // Generate image with the form data
+                  await generateImage({
+                    userDescription: data.userDescription || '生成专业的买家秀图片',
+                    productDescription: data.productDescription,
+                    styleDescription: data.styleDescription,
+                    temperature: 0.7,
+                  });
+                  // The generateImage function will automatically move to step 4 when completed
+                } catch (error) {
+                  console.error('Generation failed:', error);
+                }
+              }}
+              className="max-w-4xl mx-auto"
+            />
+
+            <div className="flex justify-center space-x-4 pt-8">
               <Button variant="outline" onClick={previousStep}>
                 上一步
               </Button>
-              <Button onClick={nextStep} disabled={!canProceedToStep(4)}>
+              <Button 
+                onClick={async () => {
+                  try {
+                    if (!generationFlow.generationRequest) {
+                      // If no generation request yet, create a basic one
+                      await generateImage({
+                        userDescription: '生成专业的买家秀图片',
+                        styleDescription: '自然融入场景',
+                        temperature: 0.7,
+                      });
+                    } else {
+                      // Move to next step if generation request exists
+                      nextStep();
+                    }
+                  } catch (error) {
+                    console.error('Generation failed:', error);
+                  }
+                }}
+                disabled={!generationFlow.selectedProduct}
+              >
                 生成买家秀
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -144,14 +210,24 @@ export default function GeneratePage() {
         )}
 
         {generationFlow.currentStep === 4 && (
-          <div className="text-center py-16">
-            <h2 className="text-2xl font-semibold mb-4">生成结果</h2>
-            <p className="text-muted-foreground mb-8">
-              结果展示功能正在开发中...
-            </p>
-            <Button variant="outline" onClick={previousStep}>
-              上一步
-            </Button>
+          <div className="space-y-6">
+            <ResultDisplay
+              onRegenerate={() => {
+                console.log('Regenerating...');
+                // Stay on current step for regeneration
+              }}
+              onShare={(imageUrl) => {
+                console.log('Sharing:', imageUrl);
+                // Handle sharing logic
+              }}
+              className="max-w-6xl mx-auto"
+            />
+
+            <div className="flex justify-center pt-8">
+              <Button variant="outline" onClick={previousStep}>
+                上一步
+              </Button>
+            </div>
           </div>
         )}
       </div>
