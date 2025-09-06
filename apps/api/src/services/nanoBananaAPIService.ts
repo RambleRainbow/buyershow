@@ -1,7 +1,7 @@
-import { ofetch } from 'ofetch';
 import { z } from 'zod';
 import type { FastifyInstance } from 'fastify';
 import { config } from '../config/index.js';
+import { ProxyAgent } from 'undici';
 
 const geminiContentSchema = z.object({
   text: z.string().optional(),
@@ -36,8 +36,11 @@ const geminiResponseSchema = z.object({
       })),
     }),
     finishReason: z.string(),
-    index: z.number(),
+    index: z.number().optional(), // Index field is optional in the actual API response
   })),
+  usageMetadata: z.any().optional(),
+  modelVersion: z.string().optional(),
+  responseId: z.string().optional(),
 });
 
 export interface ImageGenerationRequest {
@@ -80,31 +83,76 @@ export class NanoBananaAPIService {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  private async makeRequest(payload: any, attempt: number = 1): Promise<any> {
+  private async makeRequest(payload: any, attempt: number = 1, useProxy: boolean = true): Promise<any> {
     try {
       const url = `${this.baseUrl}/v1beta/models/${this.modelName}:generateContent`;
       
-      const response = await ofetch(url, {
+      const requestOptions: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-goog-api-key': this.apiKey,
         },
-        body: payload,
-        timeout: 60000,
-      });
+        body: JSON.stringify(payload),
+      };
 
-      return response;
+      // Add proxy agent if configured and useProxy is true
+      if (config.nanoBanana.proxyUrl && useProxy) {
+        const proxyAgent = new ProxyAgent(config.nanoBanana.proxyUrl);
+        (requestOptions as any).dispatcher = proxyAgent;
+        
+        this.fastify.log.info({
+          proxyUrl: config.nanoBanana.proxyUrl
+        }, 'Using proxy server for Nano Banana API request');
+      } else if (!useProxy) {
+        this.fastify.log.info('Attempting direct connection (without proxy)');
+      }
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      requestOptions.signal = controller.signal;
+
+      const response = await fetch(url, requestOptions);
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const jsonResponse = await response.json();
+      
+      // Log the actual response structure for debugging
+      this.fastify.log.info({
+        responseKeys: Object.keys(jsonResponse),
+        candidatesLength: jsonResponse.candidates?.length,
+        firstCandidate: jsonResponse.candidates?.[0] ? Object.keys(jsonResponse.candidates[0]) : null
+      }, 'API Response structure');
+
+      return jsonResponse;
     } catch (error: any) {
       this.fastify.log.error({
-        error,
+        error: {
+          name: error.name,
+          message: error.message,
+          code: error.code,
+          errno: error.errno,
+          status: error.status,
+          statusCode: error.statusCode,
+        },
         attempt,
         payload: { ...payload, contents: '[REDACTED]' },
+        proxyUrl: config.nanoBanana.proxyUrl,
       }, 'Nano Banana API request failed');
 
       if (attempt < this.maxRetries) {
         await this.sleep(this.retryDelay * attempt);
-        return this.makeRequest(payload, attempt + 1);
+        return this.makeRequest(payload, attempt + 1, useProxy);
+      }
+
+      // If all attempts with proxy failed, try once without proxy
+      if (config.nanoBanana.proxyUrl && useProxy && attempt === this.maxRetries) {
+        this.fastify.log.warn('All proxy attempts failed, trying direct connection');
+        return this.makeRequest(payload, 1, false);
       }
 
       throw error;

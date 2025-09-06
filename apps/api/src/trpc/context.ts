@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { createDatabaseService } from '../db/client.js';
+import { createMockDatabaseService } from '../db/mockClient.js';
 import { createFileUploadService } from '../services/fileUploadService.js';
 import { createNanoBananaAPIService } from '../services/nanoBananaAPIService.js';
 import { createPromptGenerationService } from '../services/promptGenerationService.js';
@@ -15,7 +15,7 @@ export interface Context {
   reply: FastifyReply;
   user?: User;
   services: {
-    db: ReturnType<typeof createDatabaseService>;
+    db: ReturnType<typeof createMockDatabaseService>;
     fileUpload: ReturnType<typeof createFileUploadService>;
     nanoBanana: ReturnType<typeof createNanoBananaAPIService>;
     prompt: ReturnType<typeof createPromptGenerationService>;
@@ -30,7 +30,7 @@ export function createContext({ request, reply }: CreateContextOptions): Context
     reply,
     user: request.user,
     services: {
-      db: createDatabaseService(fastify),
+      db: createMockDatabaseService(fastify),
       fileUpload: createFileUploadService(fastify),
       nanoBanana: createNanoBananaAPIService(fastify),
       prompt: createPromptGenerationService(fastify),

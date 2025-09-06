@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import { config as loadEnv } from 'dotenv';
+
+// Load environment variables from .env file
+loadEnv();
 
 const configSchema = z.object({
   app: z.object({
@@ -17,6 +21,7 @@ const configSchema = z.object({
   nanoBanana: z.object({
     apiKey: z.string().min(1, 'Google Nano Banana API key is required'),
     baseUrl: z.string().url().default('https://generativelanguage.googleapis.com'),
+    proxyUrl: z.string().url().optional(),
   }),
 });
 
@@ -37,6 +42,7 @@ const envConfig = {
   nanoBanana: {
     apiKey: process.env.NANO_BANANA_API_KEY || '',
     baseUrl: process.env.NANO_BANANA_BASE_URL || 'https://generativelanguage.googleapis.com',
+    proxyUrl: process.env.PROXY_URL,
   },
 };
 
