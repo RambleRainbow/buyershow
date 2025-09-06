@@ -107,7 +107,7 @@
   - _Leverage: shadcn/ui Grid + Card组件_
   - _Requirements: 3.2_
 
-- [ ] 3.5 创建描述输入表单组件
+- [x] 3.5 创建描述输入表单组件
   - File: apps/web/src/components/DescriptionForm.tsx
   - 实现多种描述类型的输入界面
   - 使用React Hook Form + Zod验证
@@ -115,7 +115,7 @@
   - _Leverage: React Hook Form + Zod + shadcn/ui_
   - _Requirements: 3.3, 3.4_
 
-- [ ] 3.6 创建结果展示组件
+- [x] 3.6 创建结果展示组件
   - File: apps/web/src/components/ResultDisplay.tsx
   - 实现原图和生成图的对比展示
   - 添加下载和重新生成功能
@@ -123,7 +123,7 @@
   - _Leverage: Next.js Image组件_
   - _Requirements: 3.5_
 
-- [ ] 3.7 创建反馈收集组件
+- [x] 3.7 创建反馈收集组件
   - File: apps/web/src/components/FeedbackForm.tsx
   - 实现星级评分和评论输入
   - 添加反馈提交和数据收集
@@ -133,7 +133,7 @@
 
 ## 4. 页面和路由实现
 
-- [ ] 4.1 创建主页和用户流程页面
+- [x] 4.1 创建主页和用户流程页面
   - File: apps/web/src/app/page.tsx, generate/page.tsx
   - 实现完整的用户生成流程页面
   - 添加步骤导航和进度显示
@@ -141,7 +141,7 @@
   - _Leverage: Next.js App Router_
   - _Requirements: 4.1-4.8_
 
-- [ ] 4.2 添加页面间状态管理
+- [x] 4.2 添加页面间状态管理
   - File: apps/web/src/hooks/useGenerationFlow.ts
   - 实现跨页面的状态持久化
   - 添加步骤验证和导航逻辑
@@ -149,7 +149,7 @@
   - _Leverage: Zustand + React Query_
   - _Requirements: 4.1_
 
-- [ ] 4.3 实现响应式设计和移动适配
+- [x] 4.3 实现响应式设计和移动适配
   - File: apps/web/src/styles/globals.css, component styles
   - 优化移动端用户体验
   - 添加触摸友好的交互设计

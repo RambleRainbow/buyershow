@@ -153,8 +153,8 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
     );
   }
 
-  // Error State
-  if (generationResult?.status === 'failed') {
+  // Error State  
+  if (generationResult?.status === 'FAILED') {
     return (
       <div className={cn('space-y-6', className)}>
         <div className="text-center space-y-4">
@@ -180,7 +180,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
   }
 
   // Success State
-  if (!generationResult || generationResult.status !== 'completed') {
+  if (!generationResult || generationResult.status !== 'COMPLETED') {
     return (
       <div className={cn('text-center py-16', className)}>
         <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">

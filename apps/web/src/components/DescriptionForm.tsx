@@ -31,6 +31,7 @@ type DescriptionFormData = z.infer<typeof descriptionSchema>;
 interface DescriptionFormProps {
   onSubmit?: (data: DescriptionFormData) => void;
   className?: string;
+  hideSubmitButton?: boolean;
 }
 
 // Predefined style suggestions
@@ -53,7 +54,7 @@ const POSITION_SUGGESTIONS = [
   { label: '随意摆放', value: '商品随意摆放在生活空间中' },
 ];
 
-export function DescriptionForm({ onSubmit, className }: DescriptionFormProps) {
+export function DescriptionForm({ onSubmit, className, hideSubmitButton = false }: DescriptionFormProps) {
   const [activeStyleTab, setActiveStyleTab] = useState<'input' | 'suggestions'>('suggestions');
   const [activePositionTab, setActivePositionTab] = useState<'input' | 'suggestions'>('suggestions');
   
@@ -317,15 +318,17 @@ export function DescriptionForm({ onSubmit, className }: DescriptionFormProps) {
         )}
 
         {/* Submit Button */}
-        <div className="flex justify-center pt-4">
-          <Button 
-            type="submit" 
-            disabled={!isValid}
-            className="min-w-32"
-          >
-            确认描述
-          </Button>
-        </div>
+        {!hideSubmitButton && (
+          <div className="flex justify-center pt-4">
+            <Button 
+              type="submit" 
+              disabled={!isValid}
+              className="min-w-32"
+            >
+              确认描述
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );

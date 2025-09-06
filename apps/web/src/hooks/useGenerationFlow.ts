@@ -55,10 +55,10 @@ export function useGenerationFlow() {
     }
   }, []);
 
-  // Mock tRPC hooks since backend is not connected yet
+  // Real API call to our backend
   const uploadSceneMutation = {
     mutateAsync: async (data: any) => {
-      // Mock successful upload
+      // For now, we'll store the base64 data locally since the backend isn't fully connected
       return {
         filename: data.fileName,
         originalName: data.fileName,
@@ -73,22 +73,42 @@ export function useGenerationFlow() {
   
   const generateImageMutation = {
     mutateAsync: async (data: any) => {
-      // Mock successful generation
-      return {
-        id: Math.random().toString(),
-        status: 'COMPLETED',
-        enhancedPrompt: `Enhanced: ${data.styleDescription || ''} ${data.positionDescription || ''}`,
-        createdAt: new Date().toISOString(),
-        generatedImage: {
-          id: Math.random().toString(),
-          filename: 'generated.jpg',
-          imageData: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzQyODVmNCI+PC9yZWN0Pjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIyMCI+R2VuZXJhdGVkIEltYWdlPC90ZXh0Pjwvc3ZnPg==',
-          mimeType: 'image/svg+xml',
-          width: 400,
-          height: 400,
-          generatedAt: new Date().toISOString(),
-        },
-      };
+      try {
+        setIsGenerating(true);
+        
+        // Call our backend API directly
+        const response = await fetch('http://localhost:3001/trpc/generation.generateImage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            input: {
+              userDescription: data.userDescription || '生成专业的买家秀图片',
+              styleDescription: data.styleDescription,
+              positionDescription: data.positionDescription,
+              temperature: data.temperature || 0.7,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+
+        return result.result.data;
+      } catch (error) {
+        console.error('API call failed:', error);
+        setIsGenerating(false);
+        throw error;
+      }
     },
     isLoading: false,
     error: null,
@@ -229,14 +249,16 @@ export function useGenerationFlow() {
 
       const result = await generateImageMutation.mutateAsync(generationRequest);
 
-      setGenerationResult({
+      const resultData = {
         id: result.id,
         status: result.status,
         enhancedPrompt: result.enhancedPrompt,
         generatedImageUrl: result.generatedImage?.imageData || '',
         createdAt: new Date(result.createdAt),
         processingTime: '15',
-      });
+      };
+      
+      setGenerationResult(resultData);
 
       // If generation completed immediately, go to results step
       if (result.status === 'COMPLETED') {

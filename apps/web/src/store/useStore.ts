@@ -35,6 +35,8 @@ interface GenerationResult {
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
   enhancedPrompt: string;
   createdAt: Date;
+  processingTime?: string;
+  generatedImageUrl?: string; // Base64 image data URL
   generatedImage?: {
     id: string;
     filename: string;
