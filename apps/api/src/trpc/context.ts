@@ -25,10 +25,26 @@ export interface Context {
 export function createContext({ request, reply }: CreateContextOptions): Context {
   const fastify = request.server;
   
+  // Handle authentication for tRPC requests
+  let user: User | undefined = request.user;
+  
+  if (!user) {
+    // Try to extract user ID from headers for MVP
+    const userIdHeader = request.headers['x-user-id'] as string;
+    if (userIdHeader) {
+      user = {
+        id: userIdHeader,
+        role: 'user',
+      };
+      // Set user on request for logging purposes
+      request.user = user;
+    }
+  }
+  
   return {
     request,
     reply,
-    user: request.user,
+    user,
     services: {
       db: createMockDatabaseService(fastify),
       fileUpload: createFileUploadService(fastify),

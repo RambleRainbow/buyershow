@@ -66,7 +66,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       ? ['http://localhost:3000', 'http://127.0.0.1:3000']
       : [config.app.frontendUrl],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id', 'x-user-id'],
     credentials: true,
   });
 

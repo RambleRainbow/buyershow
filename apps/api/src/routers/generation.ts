@@ -5,10 +5,13 @@ import { router, protectedProcedure } from '../trpc/index.js';
 const generationRequestSchema = z.object({
   userDescription: z.string().min(5, 'Description must be at least 5 characters'),
   productDescription: z.string().optional(),
-  placementDescription: z.string().optional(),
+  placementDescription: z.string().optional(), 
   styleDescription: z.string().optional(),
   sceneImageId: z.string().optional(),
   productId: z.string().optional(),
+  // Support direct base64 image data for MVP
+  sceneImageBase64: z.string().optional(),
+  productImageBase64: z.string().optional(),
   temperature: z.number().min(0).max(1).default(0.7),
 });
 
@@ -41,6 +44,8 @@ export const generationRouter = router({
           styleDescription,
           sceneImageId,
           productId,
+          sceneImageBase64,
+          productImageBase64,
           temperature,
         } = input;
 
@@ -120,22 +125,25 @@ export const generationRouter = router({
         });
 
         try {
-          // Prepare scene image data if available
-          let sceneImageBase64 = undefined;
-          let sceneImageMimeType = undefined;
-
-          if (sceneImage) {
-            // In a real implementation, you'd read the file from disk
-            // For now, we'll assume the image data is available
-            // sceneImageBase64 = await readFileAsBase64(sceneImage.path);
-            sceneImageMimeType = sceneImage.mimeType;
+          // Prepare image data for generation
+          let sceneImageData = sceneImageBase64;
+          let productImageData = productImageBase64;
+          
+          // Clean base64 data (remove data URL prefix if present)
+          if (sceneImageData?.includes(',')) {
+            sceneImageData = sceneImageData.split(',')[1];
+          }
+          if (productImageData?.includes(',')) {
+            productImageData = productImageData.split(',')[1];
           }
 
           // Generate image using Nano Banana API
           const generationResult = await ctx.services.nanoBanana.generateImage({
             prompt: optimizedPrompt,
-            sceneImageBase64,
-            sceneImageMimeType,
+            sceneImageBase64: sceneImageData,
+            sceneImageMimeType: sceneImageData ? 'image/jpeg' : undefined,
+            productImageBase64: productImageData,
+            productImageMimeType: productImageData ? 'image/jpeg' : undefined,
             temperature,
             maxOutputTokens: 2048,
           });
@@ -179,8 +187,8 @@ export const generationRouter = router({
               filename: generatedImage.filename,
               imageData: generatedImage.imageData,
               mimeType: generatedImage.mimeType,
-              width: generatedImage.width,
-              height: generatedImage.height,
+              width: generatedImage.width || null,
+              height: generatedImage.height || null,
               generatedAt: generatedImage.generatedAt,
             },
           };

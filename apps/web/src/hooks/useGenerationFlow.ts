@@ -84,16 +84,15 @@ export function useGenerationFlow() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-user-id': `web_user_${Date.now()}`, // Add authentication header
           },
           body: JSON.stringify({
-            input: {
-              userDescription: data.userDescription || '生成专业的买家秀图片',
-              styleDescription: data.styleDescription,
-              positionDescription: data.positionDescription,
-              sceneImageBase64: generationFlow.sceneImage?.url,
-              productImageBase64: generationFlow.productImage?.url,
-              temperature: data.temperature || 0.7,
-            },
+            userDescription: data.userDescription || '生成专业的买家秀图片',
+            styleDescription: data.styleDescription,
+            placementDescription: data.placementDescription,
+            sceneImageBase64: generationFlow.sceneImage?.url,
+            productImageBase64: generationFlow.productImage?.url,
+            temperature: data.temperature || 0.7,
           }),
         });
 
@@ -295,7 +294,9 @@ export function useGenerationFlow() {
         id: result.id,
         status: result.status,
         enhancedPrompt: result.enhancedPrompt,
-        generatedImageUrl: result.generatedImage?.imageData || '',
+        generatedImageUrl: result.generatedImage?.imageData 
+          ? `data:${result.generatedImage.mimeType || 'image/jpeg'};base64,${result.generatedImage.imageData}` 
+          : '',
         createdAt: new Date(result.createdAt),
         processingTime: '15',
       };
@@ -385,7 +386,9 @@ export function useGenerationFlow() {
           id: result.id,
           status: result.status,
           enhancedPrompt: result.enhancedPrompt,
-          generatedImageUrl: result.generatedImage?.imageData || '',
+          generatedImageUrl: result.generatedImage?.imageData 
+            ? `data:${result.generatedImage.mimeType || 'image/jpeg'};base64,${result.generatedImage.imageData}` 
+            : '',
           createdAt: new Date(result.createdAt),
           processingTime: '15',
         });
