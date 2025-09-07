@@ -84,8 +84,9 @@ export function DescriptionForm({ onSubmit, className, hideSubmitButton = false 
       sceneImageId: generationFlow.sceneImage?.id || '',
       productId: generationFlow.selectedProduct?.id || '',
       styleDescription: data.style,
-      positionDescription: data.position,
-      additionalRequirements: data.additional || undefined,
+      placementDescription: data.position,
+      userDescription: data.additional || '',
+      temperature: 0.7,
     });
     
     onSubmit?.(data);

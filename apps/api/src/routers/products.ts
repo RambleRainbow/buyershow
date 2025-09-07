@@ -285,7 +285,7 @@ export const productsRouter = router({
           },
         });
 
-        return categories.map(item => ({
+        return categories.map((item: any) => ({
           category: item.category || '',
           count: item._count.category,
         }));

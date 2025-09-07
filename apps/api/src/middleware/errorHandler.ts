@@ -97,12 +97,12 @@ async function errorHandler(fastify: FastifyInstance): Promise<void> {
     // 未知错误
     const response: ErrorResponse = {
       error: {
-        message: fastify.config.NODE_ENV === 'production' 
+        message: fastify.config['NODE_ENV'] === 'production' 
           ? 'Internal Server Error' 
           : error.message,
         code: 'INTERNAL_ERROR',
         statusCode: 500,
-        stack: fastify.config.NODE_ENV === 'development' ? error.stack : undefined,
+        stack: fastify.config['NODE_ENV'] === 'development' ? error.stack : undefined,
       },
       requestId,
       timestamp,

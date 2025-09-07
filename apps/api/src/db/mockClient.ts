@@ -5,6 +5,62 @@ export interface DatabaseService {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   healthCheck(): Promise<boolean>;
+  createUser(data: { email?: string; role?: string }): Promise<any>;
+  findUserById(id: string): Promise<any>;
+  createImageUpload(data: {
+    filename: string;
+    originalName: string;
+    size: number;
+    mimeType: string;
+    path: string;
+    url: string;
+    userId: string;
+  }): Promise<any>;
+  createGenerationRequest(data: {
+    userDescription: string;
+    productDescription?: string;
+    placementDescription?: string;
+    styleDescription?: string;
+    enhancedPrompt: string;
+    userId: string;
+    sceneImageId?: string;
+    productId?: string;
+    aiModel?: string;
+    temperature?: number;
+  }): Promise<any>;
+  updateGenerationRequest(id: string, data: {
+    status?: any;
+    completedAt?: Date;
+    promptTokens?: number;
+    outputTokens?: number;
+    totalTokens?: number;
+    errorCode?: string;
+    errorMessage?: string;
+    retryCount?: number;
+  }): Promise<any>;
+  createGeneratedImage(data: {
+    filename: string;
+    originalPrompt: string;
+    enhancedPrompt: string;
+    imageData: string;
+    mimeType: string;
+    size?: number;
+    width?: number;
+    height?: number;
+    quality?: string;
+    style?: string;
+    generationRequestId: string;
+    aiModel?: string;
+  }): Promise<any>;
+  getGenerationHistory(userId: string, limit?: number): Promise<any[]>;
+  updateSystemMetrics(date: Date, data: {
+    totalRequests?: number;
+    successfulGenerations?: number;
+    failedGenerations?: number;
+    totalTokensUsed?: number;
+    averageProcessingTime?: number;
+    apiCost?: number;
+  }): Promise<any>;
 }
 
 export class MockDatabaseService implements DatabaseService {
@@ -153,7 +209,7 @@ export class MockDatabaseService implements DatabaseService {
     };
   }
 
-  async getGenerationHistory(userId: string, limit = 10): Promise<any[]> {
+  async getGenerationHistory(_userId: string, _limit = 10): Promise<any[]> {
     return [];
   }
 

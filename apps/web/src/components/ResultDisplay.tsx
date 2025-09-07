@@ -164,7 +164,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
           <div>
             <h2 className="text-2xl font-semibold mb-2">生成失败</h2>
             <p className="text-muted-foreground">
-              {generationResult.error || '生成过程中出现了问题，请重试'}
+              生成过程中出现了问题，请重试
             </p>
           </div>
         </div>
@@ -279,7 +279,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
             <CardContent>
               <div className="aspect-square bg-muted rounded-lg overflow-hidden">
                 <Image
-                  src={generationResult.generatedImageUrl}
+                  src={generationResult.generatedImageUrl || ''}
                   alt="生成的买家秀"
                   width={400}
                   height={400}
@@ -302,7 +302,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
           <CardContent>
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
               <Image
-                src={generationResult.generatedImageUrl}
+                src={generationResult.generatedImageUrl || ''}
                 alt="生成的买家秀"
                 width={600}
                 height={600}
@@ -341,7 +341,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Button
-          onClick={() => handleDownload(generationResult.generatedImageUrl, '买家秀-生成结果.jpg')}
+          onClick={() => handleDownload(generationResult.generatedImageUrl || '', '买家秀-生成结果.jpg')}
           disabled={isDownloading}
           className="gap-2 min-w-32"
         >

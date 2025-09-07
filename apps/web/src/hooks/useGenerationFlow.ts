@@ -118,11 +118,6 @@ export function useGenerationFlow() {
     error: null,
   };
   
-  const getGenerationStatusQuery = {
-    data: null,
-    isLoading: false,
-    error: null,
-  };
 
   // Enhanced step validation with detailed requirements
   const canProceedToStep = useCallback((step: number) => {
@@ -411,17 +406,17 @@ export function useGenerationFlow() {
         setSceneImage(undefined);
         // Also clear dependent steps
         setSelectedProduct(undefined);
-        setGenerationRequest(undefined);
+        setGenerationRequest(null as any);
         setGenerationResult(undefined);
         break;
       case 2:
         setSelectedProduct(undefined);
         // Also clear dependent steps
-        setGenerationRequest(undefined);
+        setGenerationRequest(null as any);
         setGenerationResult(undefined);
         break;
       case 3:
-        setGenerationRequest(undefined);
+        setGenerationRequest(null as any);
         // Also clear dependent steps
         setGenerationResult(undefined);
         break;
@@ -463,8 +458,8 @@ export function useGenerationFlow() {
     isGenerating: generateImageMutation.isLoading || generationFlow.isGenerating,
     
     // Errors
-    uploadError: uploadSceneMutation.error?.message,
-    generationError: generateImageMutation.error?.message || generationFlow.error,
+    uploadError: (uploadSceneMutation.error as any)?.message,
+    generationError: (generateImageMutation.error as any)?.message || generationFlow.error,
     
     // Utilities
     hasUnsavedProgress: !!(

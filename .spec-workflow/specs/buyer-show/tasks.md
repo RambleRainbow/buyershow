@@ -159,7 +159,7 @@
 
 ## 5. 错误处理和用户体验优化
 
-- [ ] 5.1 实现全局错误处理
+- [x] 5.1 实现全局错误处理
   - File: apps/web/src/components/ErrorBoundary.tsx, apps/api/src/utils/errorHandler.ts
   - 添加前后端统一的错误处理机制
   - 实现用户友好的错误信息展示

@@ -119,7 +119,7 @@ export const historyRouter = router({
           ctx.services.db.client.generationRequest.count({ where }),
         ]);
 
-        const generationsWithImages = generations.map(gen => ({
+        const generationsWithImages = generations.map((gen: any) => ({
           ...gen,
           hasGeneratedImage: gen.generatedImages.length > 0,
           generatedImages: undefined, // Remove from response
@@ -298,7 +298,7 @@ export const historyRouter = router({
           failedGenerations,
           pendingGenerations,
           tokenStats,
-          processingTimeStats,
+          _processingTimeStats,
         ] = await Promise.all([
           ctx.services.db.client.generationRequest.count({
             where: { userId: ctx.user.id },
