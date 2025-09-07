@@ -175,7 +175,7 @@
   - _Leverage: shadcn/ui Skeleton + Progress_
   - _Requirements: 用户体验优化_
 
-- [ ] 5.3 实现文件大小和格式优化
+- [x] 5.3 实现文件大小和格式优化
   - File: apps/api/src/utils/imageProcessor.ts
   - 添加图片压缩和格式转换功能
   - 优化上传和下载的文件大小
@@ -185,7 +185,7 @@
 
 ## 6. 测试实现
 
-- [ ] 6.1 设置测试环境和配置
+- [x] 6.1 设置测试环境和配置
   - File: vitest.config.ts, apps/web/vitest.config.ts, apps/api/vitest.config.ts
   - 配置Vitest测试环境
   - 设置测试数据库和Mock
@@ -193,7 +193,7 @@
   - _Leverage: Vitest + Testing Library_
   - _Requirements: 测试策略_
 
-- [ ] 6.2 编写核心服务单元测试
+- [x] 6.2 编写核心服务单元测试
   - File: apps/api/src/services/__tests__/*.test.ts
   - 测试NanoBananaAPIService和PromptGenerationService
   - 添加文件上传服务测试
@@ -201,7 +201,7 @@
   - _Leverage: Vitest + Mock_
   - _Requirements: 6.1_
 
-- [ ] 6.3 编写React组件测试
+- [x] 6.3 编写React组件测试
   - File: apps/web/src/components/__tests__/*.test.tsx
   - 测试各个UI组件的渲染和交互
   - 添加表单验证和状态管理测试
@@ -209,7 +209,7 @@
   - _Leverage: React Testing Library_
   - _Requirements: 6.1_
 
-- [ ] 6.4 编写E2E用户流程测试
+- [x] 6.4 编写E2E用户流程测试
   - File: apps/web/e2e/*.spec.ts
   - 测试完整的用户生成流程
   - 添加多浏览器兼容性测试
@@ -219,7 +219,7 @@
 
 ## 7. 部署和优化
 
-- [ ] 7.1 配置生产环境构建
+- [x] 7.1 配置生产环境构建
   - File: Dockerfile, docker-compose.yml, deployment scripts
   - 设置Docker容器化部署
   - 配置环境变量和秘钥管理
@@ -227,7 +227,7 @@
   - _Leverage: Docker + 环境配置_
   - _Requirements: 部署策略_
 
-- [ ] 7.2 实现API使用量监控
+- [x] 7.2 实现API使用量监控
   - File: apps/api/src/middleware/rateLimiting.ts, monitoring.ts
   - 添加Google Nano Banana API使用量跟踪
   - 实现请求频率限制
@@ -235,7 +235,7 @@
   - _Leverage: Redis + 监控中间件_
   - _Requirements: 成本控制_
 
-- [ ] 7.3 性能优化和缓存策略
+- [x] 7.3 性能优化和缓存策略
   - File: apps/web/next.config.js, apps/api/src/cache/
   - 优化图片加载和页面性能
   - 实现API响应缓存
@@ -245,7 +245,7 @@
 
 ## 8. 文档和收尾
 
-- [ ] 8.1 编写API文档和使用说明
+- [x] 8.1 编写API文档和使用说明
   - File: docs/api.md, README.md
   - 生成tRPC API文档
   - 编写部署和开发指南
@@ -253,7 +253,7 @@
   - _Leverage: TypeScript类型生成文档_
   - _Requirements: 文档要求_
 
-- [ ] 8.2 代码审查和重构优化
+- [x] 8.2 代码审查和重构优化
   - File: 全项目代码Review
   - 检查TypeScript类型覆盖率
   - 优化代码结构和性能
@@ -261,7 +261,7 @@
   - _Leverage: TypeScript编译器 + ESLint_
   - _Requirements: 代码质量_
 
-- [ ] 8.3 最终集成测试和部署验证
+- [x] 8.3 最终集成测试和部署验证
   - File: 部署验证脚本
   - 在生产环境进行完整功能测试
   - 验证所有API集成和用户流程
