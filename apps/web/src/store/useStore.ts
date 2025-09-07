@@ -57,6 +57,8 @@ interface GenerationFlow {
   generationRequest?: GenerationRequest;
   generationResult?: GenerationResult;
   isGenerating: boolean;
+  generationStage: 'idle' | 'uploading' | 'processing' | 'generating' | 'finalizing' | 'complete';
+  generationProgress: number;
   error?: string;
 }
 
@@ -72,6 +74,8 @@ interface AppState {
   setGenerationRequest: (request: GenerationRequest) => void;
   setGenerationResult: (result: GenerationResult | undefined) => void;
   setIsGenerating: (isGenerating: boolean) => void;
+  setGenerationStage: (stage: GenerationFlow['generationStage']) => void;
+  setGenerationProgress: (progress: number) => void;
   setError: (error: string | undefined) => void;
   resetGenerationFlow: () => void;
   
@@ -94,6 +98,8 @@ const initialGenerationFlow: GenerationFlow = {
   currentStep: 1,
   totalSteps: 4,
   isGenerating: false,
+  generationStage: 'idle',
+  generationProgress: 0,
 };
 
 export const useStore = create<AppState>()(
@@ -190,11 +196,37 @@ export const useStore = create<AppState>()(
               generationFlow: {
                 ...state.generationFlow,
                 isGenerating,
+                generationStage: isGenerating ? 'uploading' : 'idle',
+                generationProgress: isGenerating ? 0 : state.generationFlow.generationProgress,
                 error: isGenerating ? undefined : state.generationFlow.error,
               },
             }),
             false,
             'setIsGenerating'
+          ),
+
+        setGenerationStage: (generationStage) =>
+          set(
+            (state) => ({
+              generationFlow: {
+                ...state.generationFlow,
+                generationStage,
+              },
+            }),
+            false,
+            'setGenerationStage'
+          ),
+
+        setGenerationProgress: (generationProgress) =>
+          set(
+            (state) => ({
+              generationFlow: {
+                ...state.generationFlow,
+                generationProgress,
+              },
+            }),
+            false,
+            'setGenerationProgress'
           ),
 
         setError: (error) =>

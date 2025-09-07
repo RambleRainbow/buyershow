@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useGenerationFlow } from '@/hooks/useGenerationFlow';
+import { LoadingState } from '@/components/LoadingStates';
 import type { FileWithPreview } from '@/types/api';
 
 interface PhotoUploadProps {
@@ -131,15 +132,13 @@ export function PhotoUpload({ onUploadComplete, onUploadError, className }: Phot
               {/* Upload Progress */}
               {isUploading && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <div className="bg-white rounded-lg p-4 min-w-[200px]">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Upload className="w-4 h-4" />
-                      <span className="text-sm font-medium">上传中...</span>
-                    </div>
-                    <Progress value={uploadProgress} className="h-2" />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {uploadProgress}%
-                    </p>
+                  <div className="bg-white rounded-lg p-4 min-w-[250px]">
+                    <LoadingState 
+                      type="progress"
+                      text="正在上传场景照片"
+                      progress={uploadProgress}
+                      size="md"
+                    />
                   </div>
                 </div>
               )}

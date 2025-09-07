@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { useGenerationFlow } from '@/hooks/useGenerationFlow';
 import { FeedbackForm } from '@/components/FeedbackForm';
+import { GenerationProgress, ResultCardSkeleton } from '@/components/LoadingStates';
 import { 
   Download, 
   RefreshCw, 
@@ -34,10 +35,7 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
   
   const { generationFlow, regenerateImage } = useGenerationFlow();
   
-  const { generationResult, sceneImage, selectedProduct, isGenerating } = generationFlow;
-
-  // Mock generation progress for demo
-  const [generationProgress, setGenerationProgress] = useState(isGenerating ? 45 : 100);
+  const { generationResult, sceneImage, selectedProduct, isGenerating, generationStage, generationProgress } = generationFlow;
 
   const handleDownload = async (imageUrl: string, filename: string) => {
     setIsDownloading(true);
@@ -83,17 +81,12 @@ export function ResultDisplay({ onRegenerate, onShare, className }: ResultDispla
           </div>
         </div>
 
-        <Card className="max-w-md mx-auto">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">生成进度</span>
-              <span className="font-medium">{generationProgress}%</span>
-            </div>
-            <Progress value={generationProgress} className="w-full" />
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              预计还需 {Math.ceil((100 - generationProgress) * 0.3)} 秒
-            </div>
+        <Card className="max-w-2xl mx-auto">
+          <CardContent className="p-6">
+            <GenerationProgress 
+              stage={generationStage === 'idle' ? 'uploading' : generationStage}
+              progress={generationProgress}
+            />
           </CardContent>
         </Card>
 

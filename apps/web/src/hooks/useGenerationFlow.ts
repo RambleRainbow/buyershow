@@ -13,6 +13,8 @@ export function useGenerationFlow() {
     setGenerationRequest,
     setGenerationResult,
     setIsGenerating,
+    setGenerationStage,
+    setGenerationProgress,
     setError,
     resetGenerationFlow,
   } = useStore();
@@ -270,9 +272,31 @@ export function useGenerationFlow() {
     styleDescription?: string;
     temperature?: number;
   }) => {
+    let progressInterval: NodeJS.Timeout | null = null;
+    
     try {
       setError(undefined);
       setIsGenerating(true);
+      setGenerationStage('uploading');
+      setGenerationProgress(0);
+
+      // Simulate progress updates
+      let currentProgress = 0;
+      progressInterval = setInterval(() => {
+        currentProgress = Math.min(currentProgress + Math.random() * 15, 95);
+        setGenerationProgress(currentProgress);
+        
+        // Update stage based on progress
+        if (currentProgress < 20) {
+          setGenerationStage('uploading');
+        } else if (currentProgress < 40) {
+          setGenerationStage('processing');
+        } else if (currentProgress < 80) {
+          setGenerationStage('generating');
+        } else {
+          setGenerationStage('finalizing');
+        }
+      }, 500);
 
       const generationRequest = {
         ...request,
@@ -284,6 +308,11 @@ export function useGenerationFlow() {
       setGenerationRequest(generationRequest);
 
       const result = await generateImageMutation.mutateAsync(generationRequest);
+
+      // Clear interval and complete progress
+      if (progressInterval) clearInterval(progressInterval);
+      setGenerationProgress(100);
+      setGenerationStage('complete');
 
       const resultData = {
         id: result.id,
@@ -305,6 +334,11 @@ export function useGenerationFlow() {
 
       return result;
     } catch (error) {
+      // Clear interval on error
+      if (progressInterval) clearInterval(progressInterval);
+      setGenerationStage('idle');
+      setGenerationProgress(0);
+      
       const errorMessage = error instanceof Error ? error.message : 'Generation failed';
       setError(errorMessage);
       setIsGenerating(false);

@@ -167,7 +167,7 @@
   - _Leverage: React Error Boundary + Fastify错误插件_
   - _Requirements: 错误处理设计_
 
-- [ ] 5.2 添加加载状态和进度指示
+- [x] 5.2 添加加载状态和进度指示
   - File: apps/web/src/components/LoadingStates.tsx
   - 实现各种加载状态的UI组件
   - 添加AI生成进度的实时反馈
